@@ -177,12 +177,15 @@ resource "aws_cloudfront_distribution" "distribution" {
     prefix = length(var.aliases) > 0 ? var.aliases[0] : null
   }
 
-  viewer_certificate {
-    acm_certificate_arn      = var.acm_certificate_arn
-    minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method       = "sni-only"
-  }
+  dynamic "viewer_certificate" {
+    for_each = length(var.aliases) > 0 && var.acm_certificate_arn != "" ? [1] : []
 
+    content {
+      acm_certificate_arn      = var.acm_certificate_arn
+      minimum_protocol_version = "TLSv1.2_2021"
+      ssl_support_method       = "sni-only"
+    }
+  }
   restrictions {
     geo_restriction {
       restriction_type = var.geo_restriction.restriction_type
