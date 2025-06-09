@@ -57,6 +57,7 @@ variable "assets_paths" {
 
 variable "aliases" {
   type        = list(string)
+  default     = []
   description = "The aliases (domain names) to be used for the Next.js application"
 }
 
