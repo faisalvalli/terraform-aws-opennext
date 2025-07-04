@@ -194,6 +194,8 @@ resource "aws_s3_object" "assets" {
   source_hash   = filemd5("${var.assets_path}/${each.value}")
   cache_control = length(regexall(".*(_next).*$", each.value)) > 0 ? "public,max-age=31536000,immutable" : var.static_asset_cache_config
   content_type  = lookup(local.content_type_lookup, split(".", each.value)[length(split(".", each.value)) - 1], "text/plain")
+
+  tags = var.default_tags
 }
 
 # Cached Files
@@ -206,4 +208,6 @@ resource "aws_s3_object" "cache" {
   source       = "${var.cache_path}/${each.value}"
   source_hash  = filemd5("${var.cache_path}/${each.value}")
   content_type = lookup(local.content_type_lookup, split(".", each.value)[length(split(".", each.value)) - 1], "text/plain")
+
+  tags = var.default_tags
 }
