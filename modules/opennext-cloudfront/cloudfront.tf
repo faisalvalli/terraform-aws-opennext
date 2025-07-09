@@ -4,6 +4,10 @@ locals {
   image_optimization_origin_id = "${var.prefix}-image-optimization-origin"
 }
 
+data "aws_cloudfront_cache_policy" "no_cache" {
+  id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+}
+
 resource "aws_cloudfront_function" "host_header_function" {
   name    = "${var.prefix}-preserve-host"
   runtime = "cloudfront-js-1.0"
@@ -248,7 +252,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     target_origin_id = local.assets_origin_id
 
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
-    cache_policy_id            = aws_cloudfront_cache_policy.cache_policy.id
+    cache_policy_id            = contains(var.no_cache_paths, "/_next/static/*") ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
     origin_request_policy_id = try(
       data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
       aws_cloudfront_origin_request_policy.origin_request_policy[0].id
@@ -265,7 +269,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     target_origin_id = local.image_optimization_origin_id
 
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
-    cache_policy_id            = aws_cloudfront_cache_policy.cache_policy.id
+    cache_policy_id            = contains(var.no_cache_paths, "/_next/image") ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
     origin_request_policy_id = try(
       data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
       aws_cloudfront_origin_request_policy.origin_request_policy[0].id
@@ -282,7 +286,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     target_origin_id = local.server_origin_id
 
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
-    cache_policy_id            = aws_cloudfront_cache_policy.cache_policy.id
+    cache_policy_id            = contains(var.no_cache_paths, "/_next/data/*") ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
     origin_request_policy_id = try(
       data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
       aws_cloudfront_origin_request_policy.origin_request_policy[0].id
@@ -304,7 +308,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     target_origin_id = local.server_origin_id
 
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
-    cache_policy_id            = aws_cloudfront_cache_policy.cache_policy.id
+    cache_policy_id            = contains(var.no_cache_paths, "/api/*") ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
     origin_request_policy_id = try(
       data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
       aws_cloudfront_origin_request_policy.origin_request_policy[0].id
@@ -326,7 +330,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     target_origin_id = local.assets_origin_id
 
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
-    cache_policy_id            = aws_cloudfront_cache_policy.cache_policy.id
+    cache_policy_id            = contains(var.no_cache_paths, "/favicon.ico") ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
     origin_request_policy_id = try(
       data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
       aws_cloudfront_origin_request_policy.origin_request_policy[0].id
@@ -346,7 +350,7 @@ resource "aws_cloudfront_distribution" "distribution" {
       target_origin_id = local.assets_origin_id
 
       response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
-      cache_policy_id            = aws_cloudfront_cache_policy.cache_policy.id
+      cache_policy_id            = contains(var.no_cache_paths, ordered_cache_behavior.value) ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
       origin_request_policy_id = try(
         data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
         aws_cloudfront_origin_request_policy.origin_request_policy[0].id

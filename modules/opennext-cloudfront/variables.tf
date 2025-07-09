@@ -182,6 +182,12 @@ variable "cache_policy" {
   })
 }
 
+variable "no_cache_paths" {
+  type        = list(string)
+  default     = []
+  description = "List of path patterns that should have caching disabled"
+}
+
 variable "geo_restriction" {
   description = "The georestriction configuration for the CloudFront distribution"
   type = object({
