@@ -5,7 +5,7 @@ locals {
 }
 
 data "aws_cloudfront_cache_policy" "no_cache" {
-  id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+  name = "Managed-CachingDisabled"
 }
 
 resource "aws_cloudfront_function" "host_header_function" {
