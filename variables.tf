@@ -376,6 +376,7 @@ variable "cloudfront" {
         query_string_behavior = string
       }))
     }))
+    no_cache_paths = optional(list(string), [])
     origin_request_policy = optional(object({
       cookies_config = object({
         cookie_behavior = string
