@@ -24,7 +24,7 @@ EOF
 
 data "aws_cloudfront_origin_request_policy" "origin_request_policy" {
   count = var.origin_request_policy == null ? 1 : 0
-  name  = "Managed-OriginRequestPolicy-None"
+  name  = "Managed-None"
 }
 
 resource "aws_cloudfront_origin_request_policy" "origin_request_policy" {
