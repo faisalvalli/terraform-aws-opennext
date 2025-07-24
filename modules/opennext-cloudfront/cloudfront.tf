@@ -24,7 +24,7 @@ EOF
 
 data "aws_cloudfront_origin_request_policy" "origin_request_policy" {
   count = var.origin_request_policy == null ? 1 : 0
-  name  = "Managed-None"
+  name  = "Managed-AllViewerExceptHostHeader"
 }
 
 resource "aws_cloudfront_origin_request_policy" "origin_request_policy" {
@@ -253,10 +253,6 @@ resource "aws_cloudfront_distribution" "distribution" {
 
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy.id
     cache_policy_id            = contains(var.no_cache_paths, "/_next/static/*") ? data.aws_cloudfront_cache_policy.no_cache.id : aws_cloudfront_cache_policy.cache_policy.id
-    origin_request_policy_id = try(
-      data.aws_cloudfront_origin_request_policy.origin_request_policy[0].id,
-      aws_cloudfront_origin_request_policy.origin_request_policy[0].id
-    )
 
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
